@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Sizes from './sizes'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
+import { EventEmitter } from 'tseep'
 
 type WorldOptions = {
     controls?: boolean
@@ -13,7 +14,7 @@ type WorldOptions = {
     }
 }
 
-export default class World {
+export default class World extends EventEmitter<{ resize: () => void }> {
     scene: THREE.Scene
     renderer: THREE.WebGLRenderer
     camera: THREE.PerspectiveCamera
@@ -29,6 +30,7 @@ export default class World {
             camera: { fov = 75, near = 0.1, far = 300 } = {},
         }: WorldOptions = {}
     ) {
+        super()
         this.sizes = sizes
         this.renderer = new THREE.WebGLRenderer({ antialias: true })
         this.renderer.setClearColor('#000')
@@ -56,6 +58,7 @@ export default class World {
         this.camera.updateProjectionMatrix()
         this.renderer.setSize(this.sizes.width, this.sizes.height)
         this.renderer.setPixelRatio(this.sizes.pixelRatio)
+        this.emit('resize')
     }
 
     render = () => {

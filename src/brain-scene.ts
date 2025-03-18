@@ -66,7 +66,7 @@ export class BrainScene {
         this.world.scene.add(this.brain)
         this.setCamera()
 
-        this.sizes.on('resize', this.setCamera)
+        this.world.on('resize', this.setCamera)
     }
 
     get mouseMovement() {
