@@ -6,6 +6,8 @@ import World from './utils/world'
 import Sizes from './utils/sizes'
 import { BrainScene } from './brain-scene'
 import { Loader } from './utils/loader'
+import { BrainGui } from './brain-gui'
+import GUI from 'lil-gui'
 
 THREE.ColorManagement.enabled = true
 
@@ -29,6 +31,8 @@ gltfLoader.load(`${baseUrl}/brain3-rotate-with-normals.glb`, (gltf) => {
         let brain = brainmesh.geometry as THREE.BufferGeometry
 
         brainScene = new BrainScene({ brain, world, mouse })
+        let gui = new GUI()
+        new BrainGui(brainScene, gui).init()
         loader.on('ready', brainScene.start)
     }
 })
