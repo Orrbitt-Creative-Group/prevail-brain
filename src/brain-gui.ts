@@ -1,11 +1,9 @@
 import { GUI } from 'lil-gui'
-import * as THREE from 'three'
 import { BrainScene } from './brain-scene'
 
 export class BrainGui {
     br: BrainScene
     debg: {
-        clearColor: string
         lightHelpers: boolean
         phongSpecular: string
         lightsCastShadow: boolean
@@ -18,12 +16,9 @@ export class BrainGui {
     constructor(br: BrainScene, gui: GUI) {
         this.br = br
         this.gui = gui
-
-        let clear = new THREE.Color()
-        this.br.world.renderer.getClearColor(clear)
+        this.gui.close()
 
         this.debg = {
-            clearColor: clear.getHexString(),
             lightHelpers: false,
             lightsCastShadow: true,
             phongSpecular: this.br.phongMat.specular.getHexString(),
@@ -33,14 +28,13 @@ export class BrainGui {
     }
 
     init() {
-        this.gui.addColor(this.debg, 'clearColor').onChange((val: string) => {
-            this.br.world.renderer.setClearColor(val)
-        })
-
+        this.gui.add(this.br.boxHelper, 'visible').name('show box')
+        this.gui.add(this.br, 'reset')
         this.folders['movement'] = this.makeMoveFolder()
         this.folders['cam'] = this.makeCamFolder()
         this.folders['phong'] = this.makePhongFolder()
         this.folders['lights'] = this.makeLightFolder()
+        this.folders['object'] = this.makeObjectFolder()
     }
 
     foldersShowHide = (show: string[], hide: string[]) => {
@@ -60,14 +54,41 @@ export class BrainGui {
         let fold = this.gui.addFolder('camera')
 
         fold.add(this.br.world.camera, 'fov', 0, 180, 1)
-            .onChange(this.br.setCamera)
+            .onChange(this.br.setToCamera)
             .listen()
             .decimals(0)
 
-        fold.add(this.br, 'camZOffset', -2, 2, 0.1).onChange(this.br.setCamera)
+        fold.add(this.br, 'camZOffset', -2, 2, 0.1).onChange(this.br.setToCamera)
         fold.add(this.br.camPos, 'x', -10, 10, 0.1).name('camera x')
         fold.add(this.br.camPos, 'y', -10, 10, 0.1).name('camera y')
 
+        fold.add(this.br.world.camera.position, 'x').name('actualx').disable().listen().decimals(2)
+        fold.add(this.br.world.camera.position, 'y').name('actualy').disable().listen().decimals(2)
+        fold.add(this.br.world.camera.position, 'z').name('actualz').disable().listen().decimals(2)
+
+        return fold
+    }
+
+    makeObjectFolder() {
+        let fold = this.gui.addFolder('object')
+        fold.add(this.br.brain.position, 'x', -10, 10, 0.01).listen().decimals(2).name('pos x')
+        fold.add(this.br.brain.position, 'y', -10, 10, 0.01).listen().decimals(2).name('pos y')
+        fold.add(this.br.brain.position, 'z', -10, 10, 0.01).listen().decimals(2).name('pos z')
+        fold.add(this.br.brain.scale, 'x', -10, 10, 0.1)
+            .listen()
+            .decimals(2)
+            .disable()
+            .name('scale x')
+        fold.add(this.br.brain.scale, 'y', -10, 10, 0.1)
+            .listen()
+            .decimals(2)
+            .disable()
+            .name('scale y')
+        fold.add(this.br.brain.scale, 'z', -10, 10, 0.1)
+            .listen()
+            .decimals(2)
+            .disable()
+            .name('scale z')
         return fold
     }
 

@@ -1,0 +1,99 @@
+@use 'sass:math';
+
+@function size($val: 16px) {
+    $div: math.div($val, 16);
+    $rounded: math.div(math.round($div * 1000), 1000);
+    @return ($rounded * 1rem);
+}
+
+@mixin fluid($prop, $min_vw, $max_vw, $min_val, $max_val) {
+    $slope: math.div(($max_val - $min_val), ($max_vw - $min_vw));
+    $yInt: size(-$min_vw * $slope + $min_val);
+
+    $slope: math.div(math.round($slope * 100000), 100000) * 100vw;
+
+    // #{$prop}: size($min_val);
+    #{$prop}: clamp(#{size($min_val)}, #{$yInt} + #{$slope}, #{size($max_val)});
+}
+
+:root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.webgl-container {
+    position: absolute;
+    outline: 2px solid rgba(104, 212, 255, 0.5);
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+
+    top: 0;
+    left: 0;
+}
+
+.hero-example {
+    background: radial-gradient(50% 50% at 50% 50%, #ffffff 0%, #f2f2f2 93.6%);
+    border-radius: 9px;
+    padding: 5%;
+    min-height: 100vh;
+    display: flex;
+    place-items: center;
+}
+
+.hero-content {
+    z-index: 2;
+    position: relative;
+    width: 70%;
+}
+
+.webgl-brain-outer {
+    position: absolute;
+    width: 70%;
+    max-width: 800px;
+    right: 5%;
+}
+.webgl-brain {
+    outline: 2px solid rgba(181, 10, 255, 0.5);
+    position: relative;
+    padding-bottom: 84.180796%;
+    canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+h1 {
+    @include fluid(font-size, 320, 1440, 50, 80);
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+@media (min-width: 1440px) {
+    h1 {
+        font-size: 5rem;
+    }
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+.extra-content {
+    height: 50vh;
+    padding: 5%;
+}

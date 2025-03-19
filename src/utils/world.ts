@@ -3,10 +3,12 @@ import Sizes from './sizes'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import { EventEmitter } from 'tseep'
+import { createElement } from './dom'
 
 type WorldOptions = {
     controls?: boolean
     stats?: boolean
+    container?: HTMLElement
     camera?: {
         fov?: number
         near?: number
@@ -21,6 +23,7 @@ export default class World extends EventEmitter<{ resize: () => void }> {
     sizes: Sizes
     controls?: OrbitControls
     stats?: Stats
+    container: HTMLElement
 
     constructor(
         sizes: Sizes,
@@ -28,14 +31,25 @@ export default class World extends EventEmitter<{ resize: () => void }> {
             controls = false,
             stats = false,
             camera: { fov = 75, near = 0.1, far = 300 } = {},
+            container,
         }: WorldOptions = {}
     ) {
         super()
         this.sizes = sizes
-        this.renderer = new THREE.WebGLRenderer({ antialias: true })
-        this.renderer.setClearColor('#000')
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+        // this.renderer.setClearColor('#000')
         this.renderer.outputColorSpace = THREE.SRGBColorSpace
-        document.body.appendChild(this.renderer.domElement)
+
+        if (!container) {
+            this.container = createElement('div', {
+                class: 'webgl-container',
+                style: 'position: fixed; width: 100%; height: 100%; top: 0; left: 0;',
+            })
+            document.body.appendChild(this.container)
+        } else {
+            this.container = container
+        }
+        this.container.appendChild(this.renderer.domElement)
 
         this.scene = new THREE.Scene()
         this.camera = new THREE.PerspectiveCamera(fov, 1, near, far)
@@ -54,9 +68,10 @@ export default class World extends EventEmitter<{ resize: () => void }> {
     }
 
     onResize = () => {
-        this.camera.aspect = this.sizes.width / this.sizes.height
+        let { width, height } = this.container.getBoundingClientRect()
+        this.camera.aspect = width / height
         this.camera.updateProjectionMatrix()
-        this.renderer.setSize(this.sizes.width, this.sizes.height)
+        this.renderer.setSize(width, height)
         this.renderer.setPixelRatio(this.sizes.pixelRatio)
         this.emit('resize')
     }

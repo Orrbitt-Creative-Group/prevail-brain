@@ -18,8 +18,8 @@ export default class Mouse extends EventEmitter<{ move: () => void }> {
         this.posPrev.copy(this.pos)
         this.screenPos.set(e.clientX, e.clientY)
         this.pos.set(
-            (e.clientX / this.sizes.width) * 2 - 1,
-            -(e.clientY / this.sizes.height) * 2 + 1
+            (e.clientX / this.sizes.windowWidth) * 2 - 1,
+            -(e.clientY / this.sizes.windowHeight) * 2 + 1
         )
         this.emit('move')
     }

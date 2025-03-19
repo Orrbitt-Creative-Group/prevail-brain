@@ -20,7 +20,6 @@ export type BrainSceneParams = {
     brain: THREE.BufferGeometry
     mouse: Mouse
     dirLightInfo?: { x: number; y: number; z: number; intensity: number }[]
-    domTarget: HTMLElement
 }
 
 export class BrainScene {
@@ -39,27 +38,24 @@ export class BrainScene {
     camPos = { z: 2, y: 0, x: 0 }
     // y: -0.3,
     // x: -0.2,
-    _mouseMovement = true
+    _mouseMovement = false
     moveSpeed = 0.025
     moveAmount = 0.5
     // camZOffset = 0.2
-    camZOffset = 0.2
+    camZOffset = 0
     _color1 = LIGHTBLUE
     _color2 = DARKBLUE
 
-    boxActual = new THREE.Box3()
-    boxHelper = new THREE.Box3Helper(this.boxActual, 0xff0000)
+    box: THREE.Box3
+    boxHelper: THREE.Box3Helper
 
-    boxDefault = new THREE.Box3()
     boxSize = new THREE.Vector3(1, 0.8418079614639282, 0.8022598028182983)
-    domTarget: HTMLElement
 
-    constructor({ world, brain, mouse, dirLightInfo, domTarget }: BrainSceneParams) {
+    constructor({ world, brain, mouse, dirLightInfo }: BrainSceneParams) {
         this.world = world
         this.sizes = this.world.sizes
         this.brainGeo = brain
         this.mouse = mouse
-        this.domTarget = domTarget
 
         this.world.camera.position.set(this.camPos.x, this.camPos.y, this.camPos.z)
         // this.world.renderer.setClearColor('#ffffff')
@@ -74,21 +70,16 @@ export class BrainScene {
         this.brain.castShadow = true
         this.brain.receiveShadow = true
 
-        // this.box = new THREE.Box3()
-        this.boxDefault.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
-        this.boxActual.setFromObject(this.brain)
-        this.boxHelper = new THREE.Box3Helper(this.boxActual, 0xff0000)
+        this.box = new THREE.Box3()
+        this.box.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000)
 
         this.makeDirLights(dirLightInfo || dirLightInfoDefaults)
 
         this.world.scene.add(this.brain, this.boxHelper)
-        this.setToCamera()
-        this.world.on('resize', this.setToCamera)
+        // this.setToCamera()
 
-        //@ts-ignore
-        window.brain = this
-        // @ts-ignore
-        window.THREE = THREE
+        // this.world.on('resize', this.setToCamera)
     }
 
     get mouseMovement() {
@@ -128,8 +119,8 @@ export class BrainScene {
         vertexColorsGradient(geo, {
             color1: this._color1,
             color2: this._color2,
-            min: -0.4,
-            max: 0.4,
+            min: -0.8,
+            max: 0.8,
             axis: 'z',
         })
     }
@@ -166,42 +157,48 @@ export class BrainScene {
         this.camPos.z = 2
     }
 
-    setToDomTarget = () => {
-        let rect = this.domTarget.getBoundingClientRect()
-        let fov = this.world.camera.fov
-        let camZ = this.camPos.z - this.boxSize.z * 0.5
-        let z = (this.sizes.height / Math.tan((fov * Math.PI) / 360)) * 0.5
-        let scale = camZ / z
+    setCamera = (first = false) => {
+        this.box.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
+        let size = this.box.getSize(new THREE.Vector3())
+        let center = this.box.getCenter(new THREE.Vector3())
+        let min = this.box.min
+        let max = this.box.max
 
-        let scaleX = 1
-        let scaleY = 1
-        let aspect = this.boxSize.x / this.boxSize.y
-        if (rect.width / rect.height > aspect) {
-            scaleX = rect.height * scale * aspect
-            scaleY = rect.height * scale
-        } else {
-            scaleX = rect.width * scale
-            scaleY = (rect.width * scale) / aspect
-        }
+        // 	"x": 1.7746353149414062,
+        // 	"y": 1.4943400621414185,
+        // 	"z": 1.4238027930259705
+        // }
 
-        // let scaleX = rect.width * scale
-        // let scaleY = rect.height * scale
-        let scaleZ = this.boxSize.z * scaleX
-        this.brain.scale.set(scaleX, scaleY, scaleZ)
-        this.brain.position.set(
-            (rect.left + rect.width * 0.5 - this.sizes.width * 0.5) * scale,
-            (-rect.top - rect.height * 0.5 + this.sizes.height * 0.5) * scale,
-            0
-        )
+        const fov = this.world.camera.fov * (Math.PI / 180)
+        const fovh = 2 * Math.atan(Math.tan(fov / 2) * this.world.camera.aspect)
+        let dx = Math.abs(size.x / 2 / Math.tan(fovh / 2))
+        let dy = Math.abs(size.y / 2 / Math.tan(fov / 2))
 
-        this.boxActual.setFromObject(this.brain)
+        let cameraZ = Math.max(dx, dy) * (1 + this.camZOffset)
+        this.camPos.z = cameraZ
+        this.box.setFromObject(this.brain)
     }
 
+    // setToCenter = () => {
+    //     let bbox = new THREE.Box3()
+    //     bbox.setFromObject(this.brain)
+    //     let boxSize = bbox.getSize(new THREE.Vector3())
+    //     let boxCenter = bbox.getCenter(new THREE.Vector3())
+    //     this.brain.position.x = -boxCenter.x
+    //     this.brain.position.z = -boxCenter.z
+    //     this.brain.position.y = -boxCenter.y
+    //     console.log({ boxSize, boxCenter })
+    // }
+
     setToCamera = () => {
-        // return this.setToDomTarget()
         this.brain.scale.set(1, 1, 1)
 
-        let objZ = Math.abs(this.camPos.z - this.boxDefault.max.z)
+        console.log('setToCamera')
+
+        this.box.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
+        let boxSize = this.box.getSize(new THREE.Vector3())
+
+        let objZ = Math.abs(this.camPos.z - this.box.max.z)
 
         let fov = this.world.camera.fov * (Math.PI / 180)
         let camHeight = 2 * Math.tan(fov / 2) * this.camPos.z
@@ -211,11 +208,11 @@ export class BrainScene {
         let heightAtObject = 2 * Math.tan(fov / 2) * objZ
         let widthAtObject = 2 * Math.tan(hfov / 2) * objZ
 
-        let scaleX = widthAtObject / this.boxSize.x
-        let scaleY = heightAtObject / this.boxSize.y
-        let scaleZ = this.boxSize.z * scaleX
-        this.brain.scale.set(scaleX, scaleY, scaleZ)
-        this.boxActual.setFromObject(this.brain)
+        // let objHeight = 2 * Math.tan(fov / 2) * objZ
+        // let objWidth = objHeight * boxAspect
+
+        this.brain.scale.set(widthAtObject / boxSize.x, heightAtObject / boxSize.y, 1)
+        this.box.setFromObject(this.brain)
     }
 
     tick = () => {
