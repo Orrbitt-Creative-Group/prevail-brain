@@ -19,7 +19,7 @@ const initWebglBrain = ({
     THREE.ColorManagement.enabled = true
 
     const sizes = new Sizes({ container })
-    const world = new World(sizes, { controls: false, stats: true, container })
+    const world = new World(sizes, { controls: false, stats: true })
     const mouse = new Mouse(sizes)
 
     let brainScene: BrainScene
@@ -29,8 +29,11 @@ const initWebglBrain = ({
     const loader = new Loader({ styles: { barColor: '#00c2c1', bgColor: '#fafafa' } })
     const gltfLoader = new GLTFLoader(loader.manager)
 
+    let brainPath = 'brain-withnormals-kindanormalized.glb'
+    brainPath = 'brain-centered-withnormals.glb'
+    // brainPath = 'brain3-rotate-with-normals.glb'
     const baseUrl = import.meta.env.DEV ? '' : import.meta.env.BASE_URL
-    gltfLoader.load(`${baseUrl}/brain-withnormals-kindanormalized.glb`, (gltf) => {
+    gltfLoader.load(`${baseUrl}/${brainPath}`, (gltf) => {
         const children = gltf.scene.children
         if (children[0] instanceof THREE.Mesh) {
             let brainmesh = children[0]
