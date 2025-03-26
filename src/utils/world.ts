@@ -68,8 +68,7 @@ export default class World extends EventEmitter<{ resize: () => void }> {
     }
 
     onResize = () => {
-        let width = window.innerWidth
-        let height = window.innerHeight
+        let { width, height } = this.container.getBoundingClientRect()
         this.camera.aspect = width / height
         this.camera.updateProjectionMatrix()
         this.renderer.setSize(width, height)
