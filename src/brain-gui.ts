@@ -28,8 +28,8 @@ export class BrainGui {
     }
 
     init() {
-        this.gui.add(this.br.boxHelper, 'visible').name('show box')
-        this.gui.add(this.br, 'reset')
+        // this.gui.add(this.br.boxHelper, 'visible').name('show box')
+        // this.gui.add(this.br, 'reset')
         this.folders['movement'] = this.makeMoveFolder()
         this.folders['cam'] = this.makeCamFolder()
         this.folders['phong'] = this.makePhongFolder()
@@ -53,12 +53,12 @@ export class BrainGui {
     makeCamFolder() {
         let fold = this.gui.addFolder('camera')
 
-        fold.add(this.br.world.camera, 'fov', 0, 180, 1)
-            .onChange(this.br.setToCamera)
-            .listen()
-            .decimals(0)
+        // fold.add(this.br.world.camera, 'fov', 0, 180, 1)
+        //     .onChange(this.br.setToCamera)
+        //     .listen()
+        //     .decimals(0)
 
-        fold.add(this.br, 'camZOffset', -2, 2, 0.1).onChange(this.br.setToCamera)
+        // fold.add(this.br, 'camZOffset', -2, 2, 0.1).onChange(this.br.setToCamera)
         fold.add(this.br.camPos, 'x', -10, 10, 0.1).name('camera x')
         fold.add(this.br.camPos, 'y', -10, 10, 0.1).name('camera y')
 

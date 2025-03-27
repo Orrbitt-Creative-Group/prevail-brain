@@ -4,7 +4,6 @@ import Mouse from './utils/mouse'
 import Sizes from './utils/sizes'
 import World from './utils/world'
 import { vertexColorsGradient } from './utils/vertex-colors-gradient'
-import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 const LIGHTBLUE = '#00c2c1'
 const DARKBLUE = '#1414c2'
@@ -77,9 +76,7 @@ export class BrainScene {
         this.makeDirLights(dirLightInfo || dirLightInfoDefaults)
 
         this.world.scene.add(this.brain, this.boxHelper)
-        // this.setToCamera()
-
-        // this.world.on('resize', this.setToCamera)
+        this.setToCamera()
     }
 
     get mouseMovement() {

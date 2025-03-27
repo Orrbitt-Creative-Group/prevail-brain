@@ -4,7 +4,6 @@ import * as THREE from 'three'
 
 export default class Mouse extends EventEmitter<{ move: () => void }> {
     pos = new THREE.Vector2()
-    posPrev = new THREE.Vector2()
     screenPos = new THREE.Vector2()
     sizes: Sizes
 
@@ -15,12 +14,16 @@ export default class Mouse extends EventEmitter<{ move: () => void }> {
     }
 
     onMouseMove = (e: MouseEvent) => {
-        this.posPrev.copy(this.pos)
         this.screenPos.set(e.clientX, e.clientY)
         this.pos.set(
-            (e.clientX / this.sizes.windowWidth) * 2 - 1,
-            -(e.clientY / this.sizes.windowHeight) * 2 + 1
+            (e.clientX / this.sizes.width) * 2 - 1,
+            -(e.clientY / this.sizes.height) * 2 + 1
         )
         this.emit('move')
+    }
+
+    destroy = () => {
+        this.removeAllListeners()
+        window.removeEventListener('mousemove', this.onMouseMove)
     }
 }

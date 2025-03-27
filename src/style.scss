@@ -62,14 +62,18 @@ body {
 
 .webgl-brain-outer {
     position: absolute;
-    width: 70%;
+    width: 60%;
+    left: 30%;
+    top: 20%;
+    outline: 2px solid blue;
+    z-index: 999;
     max-width: 800px;
-    right: 5%;
 }
 .webgl-brain {
-    outline: 2px solid rgba(181, 10, 255, 0.5);
     position: relative;
     padding-bottom: 84.180796%;
+    outline: 2px solid blue;
+    z-index: 999;
     canvas {
         position: absolute;
         width: 100%;

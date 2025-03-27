@@ -74,7 +74,6 @@ export class BrainScene {
         this.brain.castShadow = true
         this.brain.receiveShadow = true
 
-        // this.box = new THREE.Box3()
         this.boxDefault.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
         this.boxActual.setFromObject(this.brain)
         this.boxHelper = new THREE.Box3Helper(this.boxActual, 0xff0000)
