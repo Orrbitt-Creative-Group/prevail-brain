@@ -1,13 +1,15 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
+import { EventEmitter } from 'tseep'
 import { BrainSceneLights } from './parts/lights'
 import { BrainModel } from './parts/model'
 import Mouse from './parts/mouse'
-import World from './parts/world'
+import Sizes from './parts/sizes'
 import { map } from './utils/math-utils'
 
 type BrainParams = {
     domTarget: HTMLElement
+    sizes?: Sizes
     clearColor?: string
     camZ?: number
     moveAmount?: number
@@ -16,7 +18,18 @@ type BrainParams = {
     webglContainer?: HTMLElement
 }
 
-export class BrainWorld extends World {
+export class BrainWorld extends EventEmitter<{
+    resize: () => void
+    load: (model: BrainModel) => void
+    updateView: () => void
+    updateScale: () => void
+}> {
+    scene: THREE.Scene
+    renderer: THREE.WebGLRenderer
+    camera: THREE.PerspectiveCamera
+    sizes: Sizes
+    container: HTMLElement
+
     mouse: Mouse
     lights: BrainSceneLights
     gltfLoader: GLTFLoader
@@ -32,15 +45,40 @@ export class BrainWorld extends World {
     moveSpeed = 0.025
 
     constructor({
+        sizes,
+        fov,
         domTarget,
         clearColor,
         camZ,
         moveAmount,
         moveSpeed,
-        fov,
         webglContainer,
     }: BrainParams) {
-        super({ container: webglContainer, camera: { fov: fov } })
+        super()
+        // super({ container: webglContainer, camera: { fov: fov } })
+        THREE.ColorManagement.enabled = true
+        this.sizes = sizes || new Sizes()
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+        this.renderer.shadowMap.enabled = true
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace
+
+        if (!webglContainer) {
+            this.container = document.createElement('div')
+            this.container.classList.add('webgl-container')
+            this.container.setAttribute(
+                'style',
+                'position: fixed; width: 100%; height: 100%; top: 0; left: 0;'
+            )
+            document.body.appendChild(this.container)
+        } else {
+            this.container = webglContainer
+        }
+
+        this.container.appendChild(this.renderer.domElement)
+
+        this.scene = new THREE.Scene()
+        this.camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 6)
+
         this.mouse = new Mouse(this.sizes)
         if (clearColor) {
             this.renderer.setClearColor(clearColor)
@@ -54,6 +92,9 @@ export class BrainWorld extends World {
 
         this.lights = new BrainSceneLights(this)
         this.gltfLoader = new GLTFLoader(this.loadingManager)
+
+        this.onResize()
+        this.sizes.on('resize', this.onResize)
     }
 
     loadModel = (path: string) => {
@@ -85,6 +126,13 @@ export class BrainWorld extends World {
     }
 
     onResize = () => {
+        let { width, height } = this.container.getBoundingClientRect()
+        this.camera.aspect = width / height
+        this.camera.updateProjectionMatrix()
+        this.renderer.setSize(width, height)
+        this.renderer.setPixelRatio(this.sizes.pixelRatio)
+        this.emit('resize')
+
         this.domRect = this.domTarget.getBoundingClientRect()
 
         this.setScale()
@@ -184,6 +232,15 @@ export class BrainWorld extends World {
         this.mouse.destroy()
         this.stop()
         window.removeEventListener('scroll', this.onScroll)
-        super.destroy()
+        this.scene.clear()
+        this.renderer.domElement.remove()
+        this.renderer.dispose()
+        this.removeAllListeners()
+
+        // super.destroy()
+    }
+
+    render = () => {
+        this.renderer.render(this.scene, this.camera)
     }
 }

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import World from './world'
+import { BrainWorld } from '../brain-world'
 
 const dirLightInfoDefaults = [
     { x: -5, y: 1.2, z: 4, intensity: 4 },
@@ -10,10 +10,10 @@ const dirLightInfoDefaults = [
 export type LightInfo = (typeof dirLightInfoDefaults)[number]
 
 export class BrainSceneLights {
-    world: World
+    world: BrainWorld
     lightsArray: { instance: THREE.DirectionalLight; helper?: THREE.DirectionalLightHelper }[] = []
 
-    constructor(world: World, info = dirLightInfoDefaults) {
+    constructor(world: BrainWorld, info = dirLightInfoDefaults) {
         this.world = world
         this.setLights(info)
     }

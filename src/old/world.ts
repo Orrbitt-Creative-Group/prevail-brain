@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { EventEmitter } from 'tseep'
+import { DefaultEventMap, EventEmitter, type Listener } from 'tseep'
 import Sizes from './sizes'
 
 export type WorldParams = {
