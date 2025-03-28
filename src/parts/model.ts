@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { vertexColorsGradient } from './utils/vertex-colors-gradient'
+import { vertexColorsGradient } from '../utils/vertex-colors-gradient'
 
 const LIGHTBLUE = '#00c2c1'
 const DARKBLUE = '#1414c2'

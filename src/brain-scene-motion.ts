@@ -1,11 +1,11 @@
 import * as THREE from 'three'
 import { EventEmitter } from 'tseep'
-import { BrainModel } from './model'
+import { BrainModel } from './parts/model'
 import './style.scss'
 import { map } from './utils/math-utils'
-import Mouse from './utils/mouse'
-import Sizes from './utils/sizes'
-import World from './utils/world'
+import Mouse from './parts/mouse'
+import Sizes from './parts/sizes'
+import World from './parts/world'
 
 export type BrainParams = {
     world: World
@@ -36,15 +36,12 @@ export class BrainDomMotion extends EventEmitter<{
         this.world = world
         this.sizes = this.world.sizes
         this.mouse = mouse
-
-        this.world.camera.updateProjectionMatrix()
-        this.world.camera.position.set(this.camPos.x, this.camPos.y, this.camPos.z)
-        this.world.renderer.setClearColor('#ffffff')
-
         this.model = model
 
         this.domTarget = domTarget
         this.domRect = this.domTarget.getBoundingClientRect()
+
+        this.world.camera.position.set(this.camPos.x, this.camPos.y, this.camPos.z)
 
         this.setViewport()
         this.setScale()

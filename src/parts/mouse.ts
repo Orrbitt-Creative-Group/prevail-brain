@@ -9,6 +9,7 @@ export default class Mouse extends EventEmitter<{ move: () => void }> {
 
     constructor(sizes: Sizes) {
         super()
+
         this.sizes = sizes
         window.addEventListener('mousemove', this.onMouseMove)
     }

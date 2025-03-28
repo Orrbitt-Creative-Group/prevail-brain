@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import { EventEmitter } from 'tseep'
 import Sizes from './sizes'
 
-type WorldOptions = {
+export type WorldParams = {
+    sizes?: Sizes
     container?: HTMLElement
     camera?: {
         fov?: number
@@ -11,21 +12,22 @@ type WorldOptions = {
     }
 }
 
-export default class World extends EventEmitter<{ resize: () => void }> {
+export default class World extends EventEmitter {
     scene: THREE.Scene
     renderer: THREE.WebGLRenderer
     camera: THREE.PerspectiveCamera
     sizes: Sizes
     container: HTMLElement
 
-    constructor(
-        sizes: Sizes,
-        { camera: { fov = 75, near = 0.1, far = 6 } = {}, container }: WorldOptions = {}
-    ) {
+    constructor({
+        sizes,
+        camera: { fov = 50, near = 0.1, far = 6 } = {},
+        container,
+    }: WorldParams = {}) {
         super()
         THREE.ColorManagement.enabled = true
 
-        this.sizes = sizes
+        this.sizes = sizes || new Sizes()
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
         this.renderer.shadowMap.enabled = true
         this.renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -63,7 +65,7 @@ export default class World extends EventEmitter<{ resize: () => void }> {
         this.renderer.render(this.scene, this.camera)
     }
 
-    destroy = () => {
+    destroy() {
         this.scene.clear()
         this.renderer.domElement.remove()
         this.renderer.dispose()

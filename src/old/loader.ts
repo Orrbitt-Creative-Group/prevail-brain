@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { createElement } from './dom'
 import { EventEmitter } from 'tseep'
-import { map } from './math-utils'
+import { map } from '../utils/math-utils'
 
 type LoaderStylesOpts = {
     barColor?: string

@@ -1,15 +1,17 @@
 import GUI from 'lil-gui'
-import { BrainWrapper } from './brainwrap'
+import { BrainWorld } from './brain-world'
 import './style.scss'
-import { makeBrainGui } from './brain-scene-3-gui'
+import { makeBrainGui } from './brain-gui'
+import { BrainModel } from './parts/model'
 
 const initWebglBrain = ({ brainContainer }: { brainContainer: HTMLElement }) => {
     const baseUrl = import.meta.env.DEV ? '' : import.meta.env.BASE_URL
-    let scene = new BrainWrapper({ domTarget: brainContainer })
-    scene.loadModel(`${baseUrl}/brain-centered-withnormals.glb`)
-
-    let gui = new GUI()
-    // makeBrainGui(brain, gui)
+    let world = new BrainWorld({ domTarget: brainContainer })
+    world.loadModel(`${baseUrl}/brain-centered-withnormals.glb`)
+    world.on('load', (model: BrainModel) => {
+        let gui = new GUI()
+        makeBrainGui(world, model, gui)
+    })
 }
 
 const container = document.querySelector<HTMLElement>('.webgl-container')

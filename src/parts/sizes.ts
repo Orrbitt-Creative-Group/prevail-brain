@@ -1,12 +1,16 @@
 import { EventEmitter } from 'tseep'
 
+let instance: Sizes | null = null
 export default class Sizes extends EventEmitter<{ resize: () => void }> {
     width = window.innerWidth
     height = window.innerHeight
     pixelRatio = Math.min(window.devicePixelRatio, 2)
 
     constructor() {
+        if (instance) return instance
         super()
+        instance = this
+
         this.onResize()
 
         window.addEventListener('resize', this.onResize)

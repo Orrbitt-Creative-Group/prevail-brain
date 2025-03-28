@@ -34,17 +34,6 @@ body {
     box-sizing: border-box;
 }
 
-.webgl-container {
-    position: absolute;
-    outline: 2px solid rgba(104, 212, 255, 0.5);
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-
-    top: 0;
-    left: 0;
-}
-
 .hero-example {
     background: radial-gradient(50% 50% at 50% 50%, #ffffff 0%, #f2f2f2 93.6%);
     border-radius: 9px;
@@ -63,22 +52,16 @@ body {
 .webgl-brain-outer {
     position: absolute;
     width: 60%;
-    left: 30%;
-    top: 20%;
-    outline: 2px solid blue;
+    right: 0;
+    top: 10vh;
     z-index: 999;
     max-width: 800px;
 }
 .webgl-brain {
     position: relative;
     padding-bottom: 84.180796%;
-    outline: 2px solid blue;
     z-index: 999;
-    canvas {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
+    outline: 2px solid pink;
 }
 
 h1 {
