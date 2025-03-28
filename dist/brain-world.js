@@ -22721,14 +22721,13 @@ class Sizes extends libExports.EventEmitter {
 }
 class BrainWorld extends libExports.EventEmitter {
   constructor({
-    sizes: t,
-    fov: n,
-    domTarget: i,
-    clearColor: s,
-    camZ: a,
-    moveAmount: o,
-    moveSpeed: l,
-    webglContainer: c
+    fov: t,
+    domTarget: n,
+    clearColor: i,
+    camZ: s,
+    moveAmount: a,
+    moveSpeed: o,
+    webglContainer: l
   }) {
     super();
     be(this, "scene");
@@ -22809,10 +22808,10 @@ class BrainWorld extends libExports.EventEmitter {
     be(this, "render", () => {
       this.renderer.render(this.scene, this.camera);
     });
-    ColorManagement.enabled = !0, this.sizes = t || new Sizes(), this.renderer = new WebGLRenderer({ antialias: !0, alpha: !0 }), this.renderer.shadowMap.enabled = !0, this.renderer.outputColorSpace = SRGBColorSpace, c ? this.container = c : (this.container = document.createElement("div"), this.container.classList.add("webgl-container"), this.container.setAttribute(
+    ColorManagement.enabled = !0, this.sizes = new Sizes(), this.renderer = new WebGLRenderer({ antialias: !0, alpha: !0 }), this.renderer.shadowMap.enabled = !0, this.renderer.outputColorSpace = SRGBColorSpace, l ? this.container = l : (this.container = document.createElement("div"), this.container.classList.add("webgl-container"), this.container.setAttribute(
       "style",
       "position: fixed; width: 100%; height: 100%; top: 0; left: 0;"
-    ), document.body.appendChild(this.container)), this.container.appendChild(this.renderer.domElement), this.scene = new Scene(), this.camera = new PerspectiveCamera(n, 1, 0.1, 6), this.mouse = new Mouse(this.sizes), s && this.renderer.setClearColor(s), a && (this.camPos.z = a), o && (this.moveAmount = o), l && (this.moveSpeed = l), this.domTarget = i, this.domRect = this.domTarget.getBoundingClientRect(), this.lights = new BrainSceneLights(this), this.gltfLoader = new GLTFLoader(this.loadingManager), this.onResize(), this.sizes.on("resize", this.onResize);
+    ), document.body.appendChild(this.container)), this.container.appendChild(this.renderer.domElement), this.scene = new Scene(), this.camera = new PerspectiveCamera(t, 1, 0.1, 6), this.mouse = new Mouse(this.sizes), i && this.renderer.setClearColor(i), s && (this.camPos.z = s), a && (this.moveAmount = a), o && (this.moveSpeed = o), this.domTarget = n, this.domRect = this.domTarget.getBoundingClientRect(), this.lights = new BrainSceneLights(this), this.gltfLoader = new GLTFLoader(this.loadingManager), this.onResize(), this.sizes.on("resize", this.onResize);
   }
   destroy() {
     this.model && (this.scene.remove(this.model), this.model.destroy(), this.model = void 0), this.sizes.destroy(), this.mouse.destroy(), this.stop(), window.removeEventListener("scroll", this.onScroll), this.scene.clear(), this.renderer.domElement.remove(), this.renderer.dispose(), this.removeAllListeners();

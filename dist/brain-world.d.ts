@@ -7,7 +7,6 @@ import Mouse from './parts/mouse';
 import Sizes from './parts/sizes';
 type BrainParams = {
     domTarget: HTMLElement;
-    sizes?: Sizes;
     clearColor?: string;
     camZ?: number;
     moveAmount?: number;
@@ -42,7 +41,7 @@ export declare class BrainWorld extends EventEmitter<{
     };
     moveAmount: number;
     moveSpeed: number;
-    constructor({ sizes, fov, domTarget, clearColor, camZ, moveAmount, moveSpeed, webglContainer, }: BrainParams);
+    constructor({ fov, domTarget, clearColor, camZ, moveAmount, moveSpeed, webglContainer, }: BrainParams);
     loadModel: (path: string) => void;
     setModel: (geo: THREE.BufferGeometry) => BrainModel;
     onResize: () => void;
