@@ -8,11 +8,29 @@ import Sizes from './parts/sizes'
 import { map } from './utils/math-utils'
 
 type BrainParams = {
+    /**
+     * @description Element that will be used to size/position the brain model
+     */
     domTarget: HTMLElement
+    /**
+     * @default '#00000000
+     */
     clearColor?: string
+    /**
+     * @default 2
+     */
     camZ?: number
+    /**
+     * @default 0.5
+     */
     moveAmount?: number
+    /**
+     * @default 0.025
+     */
     moveSpeed?: number
+    /**
+     * @default 50
+     */
     fov?: number
     webglContainer?: HTMLElement
 }
