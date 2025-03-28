@@ -42,8 +42,9 @@ export class BrainWorld extends World {
     }: BrainParams) {
         super({ container: webglContainer, camera: { fov: fov } })
         this.mouse = new Mouse(this.sizes)
-
-        this.renderer.setClearColor(clearColor ?? '#ffffff')
+        if (clearColor) {
+            this.renderer.setClearColor(clearColor)
+        }
         if (camZ) this.camPos.z = camZ
         if (moveAmount) this.moveAmount = moveAmount
         if (moveSpeed) this.moveSpeed = moveSpeed
