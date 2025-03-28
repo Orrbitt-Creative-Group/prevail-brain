@@ -30,7 +30,7 @@ jobs:
               with:
                   cache: 'pnpm'
                   node-version: 20
-            - run: pnpm run build --base=/prevail-brain-demo
+            - run: pnpm run build:lib --base=/prevail-brain
             - name: Upload static files as artifact
               id: deployment
               uses: actions/upload-pages-artifact@v3
