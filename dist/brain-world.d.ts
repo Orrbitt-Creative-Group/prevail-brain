@@ -11,7 +11,7 @@ type BrainParams = {
      */
     domTarget: HTMLElement;
     /**
-     * @default '#00000000
+     * @description Background color of the scene (transparent by default)
      */
     clearColor?: string;
     /**
