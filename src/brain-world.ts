@@ -13,7 +13,7 @@ type BrainParams = {
      */
     domTarget: HTMLElement
     /**
-     * @description Background color of the scene (transparent by default)
+     * @description Background color of the webgl scene (transparent by default)
      */
     clearColor?: string
     /**
