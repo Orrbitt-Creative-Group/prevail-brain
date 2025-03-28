@@ -190,8 +190,6 @@ export class BrainScene {
     setToCamera = () => {
         this.brain.scale.set(1, 1, 1)
 
-        console.log('setToCamera')
-
         this.box.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.boxSize)
         let boxSize = this.box.getSize(new THREE.Vector3())
 

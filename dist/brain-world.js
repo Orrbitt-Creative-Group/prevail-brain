@@ -22773,7 +22773,7 @@ class BrainWorld extends libExports.EventEmitter {
       let t = (u, h, d) => u / 2 / Math.tan(d / 2) + h / 2;
       const n = this.camera;
       let i = this.camPos.z, s = n.fov * (Math.PI / 180), a = t(this.boxSize.y, this.boxSize.z, s), o = i / a;
-      console.log("scale", o), console.log("model", this.model), (c = this.model) == null || c.scale.setScalar(o);
+      (c = this.model) == null || c.scale.setScalar(o);
       let l = this.domRect.height / this.sizes.height;
       n.zoom = 1 * l, n.updateProjectionMatrix(), this.emit("updateScale");
     });

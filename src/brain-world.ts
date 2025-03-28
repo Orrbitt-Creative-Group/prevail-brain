@@ -180,8 +180,6 @@ export class BrainWorld extends EventEmitter<{
         let needZ = findDist(this.boxSize.y, this.boxSize.z, fov)
         let scale = camZ / needZ
 
-        console.log('scale', scale)
-        console.log('model', this.model)
         this.model?.scale.setScalar(scale)
 
         let amt = this.domRect.height / this.sizes.height
