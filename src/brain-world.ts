@@ -9,7 +9,6 @@ import { map } from './utils/math-utils'
 
 type BrainParams = {
     domTarget: HTMLElement
-    sizes?: Sizes
     clearColor?: string
     camZ?: number
     moveAmount?: number
@@ -45,7 +44,6 @@ export class BrainWorld extends EventEmitter<{
     moveSpeed = 0.025
 
     constructor({
-        sizes,
         fov,
         domTarget,
         clearColor,
@@ -57,7 +55,7 @@ export class BrainWorld extends EventEmitter<{
         super()
         // super({ container: webglContainer, camera: { fov: fov } })
         THREE.ColorManagement.enabled = true
-        this.sizes = sizes || new Sizes()
+        this.sizes = new Sizes()
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
         this.renderer.shadowMap.enabled = true
         this.renderer.outputColorSpace = THREE.SRGBColorSpace
